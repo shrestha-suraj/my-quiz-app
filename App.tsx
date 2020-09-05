@@ -1,21 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import { StyleSheet, View } from "react-native";
+import HomeTab from "./tabs/hometab/home.tab";
+import ScoreTab from "./tabs/scoretab/score.tab";
+import TrailerTab from "./tabs/trailertab/trailer.tab";
+import Header from "./components/header/header.component";
+import GameTab from "./tabs/gametab/game.tab";
 
-export default function App() {
+const App: React.FC = () => {
+  const [showTrailer, setTrailer] = useState<boolean>(true);
+
+  setTimeout(() => {
+    setTrailer(false);
+  }, 2000);
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
       <StatusBar style="auto" />
+      {showTrailer ? null : <Header title="Quiz Me" />}
+      {/* {showTrailer?<TrailerTab/>:<HomeTab/>} */}
+      {showTrailer?<TrailerTab/>:<GameTab/>}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    width: "100%",
+    height: "100%",
   },
 });
+
+export default App;
