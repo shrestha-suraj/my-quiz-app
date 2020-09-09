@@ -35,7 +35,9 @@ const gameStyle=StyleSheet.create({
     quitGameBoard:{
         width:'90%',
         height:'20%',
-        backgroundColor:'pink'
+        justifyContent:'space-evenly',
+        alignItems:'center',
+        flexDirection:"row"
     }
 })
 
