@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { ImageBackground, View, Text, TouchableOpacity, Alert } from 'react-native'
+import React, { useState,useRef,useEffect } from 'react'
+import { ImageBackground, View, Text, TouchableOpacity, Alert, Modal,Button,TextInput } from 'react-native'
 import gameStyle from './game.styles'
-import { Right } from 'native-base'
+import { Right,Input } from 'native-base'
 import Option from '../../components/option/option.component'
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-community/async-storage'
 
 type OptionsType = string[]
 
@@ -61,19 +62,64 @@ const gameQuestions: gameQuestionsType = [
 ]
 
 
-const GameTab: React.FC = () => {
+interface GameTabType {
+    navigation: any
+}
+
+const GameTab: React.FC<GameTabType> = ({ navigation }) => {
+
+    let nameRef=useRef(null)
+
     const [index, setIndex] = useState<number>(0)
     const [score, setScore] = useState<number>(0)
     const [fiftyFiftyUsed, setFiftyUsed] = useState<boolean>(false)
     const [showAnswerUsed, setShowAnswerUsed] = useState<boolean>(false)
     const [optionsStatus, setOptionStatus] = useState<boolean[]>([false, false, false, false])
-
     const [selectedAnswer, setSelectedAnswer] = useState<string>('')
-    const [color,setColor]=useState<string>('white')
+    const [color, setColor] = useState<string>('white')
+    // const [modalVisibility,setModalVisibility]=useState<boolean>(true)
+    // const [name,setName]=useState<string>('')
 
     const { question, options, answer } = gameQuestions[index]
     const correctAnswerIndex = options.findIndex((option) => option === answer)
 
+    const storeName=()=>{
+        console.log(nameRef.current)
+    }
+
+    useEffect(()=>{
+
+    },[])
+
+    // const NameModal = () => {
+    //     return (
+    //         <Modal
+    //             animationType="slide"
+    //             transparent={true}
+    //             visible={modalVisibility}
+    //             onRequestClose={() => {
+    //                 Alert.alert("Modal has been closed.");
+    //             }}
+    //         >
+    //             <View style={{ flex: 1, justifyContent: "center", alignItems: 'center' }}>
+    //                 <View 
+    //                 style={{ width: 250, height: 300, backgroundColor: 'white', borderWidth: 1,alignItems:"center",justifyContent:"space-evenly",borderRadius:10 }}>
+    //                     <Text style={{ fontSize: 30 }}>Welcome to the game</Text>
+    //                     <Text style={{ fontSize: 30 }}>Enter your name.</Text>
+    //                     <TextInput style={{width:'80%',padding:10,borderWidth:1,borderRadius:10}}
+    //                         placeholder="Eg: John Karter"
+    //                         onBlur={(e)=>console.log(e)}
+    //                         value={name}
+    //                         onChangeText={(text:string)=>setName(text)}
+    //                         ref={nameRef}
+    //                     />
+    //                     <Button title="Play" onPress={()=>storeName()}/>
+    //                 </View>
+    //             </View>
+
+    //         </Modal>
+    //     )
+    // }
 
 
     const triggerFiftyFifty = () => {
@@ -96,24 +142,36 @@ const GameTab: React.FC = () => {
     const optionsClicked = (optionValue: string) => {
         setSelectedAnswer(optionValue)
         setColor("gray")
-     }
+    }
 
-     const nextQuestion=()=>{
-         setColor(selectedAnswer===options[correctAnswerIndex]?"green":"red")
-         setOptionStatus([true,true,true,true])
-         setScore(selectedAnswer===options[correctAnswerIndex]?score+1:score)
-         setTimeout(()=>{
-            setIndex(index+1)
-            setOptionStatus([false,false,false,false])
-            setSelectedAnswer("")
-         },1000)
-     }
+    const nextQuestion = () => {
+        setColor(selectedAnswer === options[correctAnswerIndex] ? "green" : "red")
+        setOptionStatus([true, true, true, true])
+        const updateScore=selectedAnswer===options[correctAnswerIndex]?score+1:score
+        setScore(updateScore)
+        setTimeout(async() => {
+            if (index + 1 === gameQuestions.length) {
+                try{
+                    await AsyncStorage.setItem("score",updateScore.toString())
+                }catch(error){
+                    console.log(error)
+                }
+                return navigation.navigate("scoretab")
+            } else {
+                setIndex(index + 1)
+                setOptionStatus([false, false, false, false])
+                setSelectedAnswer("")
+            }
+
+        }, 1000)
+    }
 
 
     return (
         <ImageBackground style={{ ...gameStyle.gameTabContainer }}
             source={{ uri: `https://i.pinimg.com/originals/1d/7e/4d/1d7e4dfd1194a19152cfc55a77d64982.jpg` }}
         >
+            {/* <NameModal /> */}
             <View style={{ ...gameStyle.scoreBoard }}>
                 <Text style={{ color: 'white', fontSize: 30 }}>Score: </Text>
                 <Text style={{ color: 'yellow', fontSize: 50 }}>{score}</Text>
@@ -167,7 +225,24 @@ const GameTab: React.FC = () => {
                     alignItems: 'center',
                     height: "50%",
                     borderRadius: 10
-                }}>
+                }}
+                    onPress={() => {
+                        Alert.alert(
+                            "Are you sure you want to quit?",
+                            "",
+                            [
+                                {
+                                    text: "Cancel",
+                                    onPress: () => console.log("Cancel Pressed"),
+                                    style: "cancel"
+                                },
+                                { text: "OK", onPress: () => navigation.navigate("hometab") }
+                            ],
+                            { cancelable: false }
+                        );
+                    }}
+
+                >
                     <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>Quit</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={{
@@ -180,7 +255,7 @@ const GameTab: React.FC = () => {
                 }}
                     onPress={nextQuestion}
                 >
-                    <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>{selectedAnswer?"Check":"Pass"}</Text>
+                    <Text style={{ color: "white", fontSize: 30, fontWeight: "bold" }}>{selectedAnswer ? "Check" : "Pass"}</Text>
                 </TouchableOpacity>
             </View>
 

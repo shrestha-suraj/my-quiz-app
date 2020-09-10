@@ -5,8 +5,7 @@ const scoreStyle=StyleSheet.create({
         display:'flex',
         flex:1,
         justifyContent:'center',
-        alignItems:'center',
-        backgroundColor:'green'
+        alignItems:'center'
     }
 })
 
