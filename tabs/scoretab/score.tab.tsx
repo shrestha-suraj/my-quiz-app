@@ -49,23 +49,25 @@ const ScoreTab: React.FC<ScoreTabType> = ({navigation}) => {
 
     const saveScoreToLeaderboard=async()=>{
         const leaderBoardDataTemp=leaderBoardData
-        const rank=leaderBoardDataTemp.findIndex((player)=>player.score<score)
         if(leaderBoardDataTemp.length===10){
             leaderBoardDataTemp.pop()
         }
+        const rank=leaderBoardDataTemp.findIndex((player)=>player.score<score)
         const value:WinnerType={
             name:name,
             score:score
         }
-        leaderBoardDataTemp.splice(rank,0,value) 
-        console.log(leaderBoardDataTemp)
+        if(rank===-1){
+            leaderBoardDataTemp.push(value)
+        }else{
+            leaderBoardDataTemp.splice(rank,0,value) 
+        }
         try{
-            await AsyncStorage.setItem("topTennames",JSON.stringify(leaderBoardDataTemp))
+            await AsyncStorage.setItem("topTenNames",JSON.stringify(leaderBoardDataTemp))
         }catch(error){
 
         }
         return navigation.navigate("hometab")
-
     }
 
     return (

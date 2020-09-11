@@ -18,7 +18,7 @@ const Leaderboard:React.FC=()=>{
 
     useEffect(()=>{
         getPlayers()
-    },[])
+    })
 
     const getPlayers=async()=>{
         try{
@@ -31,41 +31,6 @@ const Leaderboard:React.FC=()=>{
             console.log(error)
         }
     }
-
-    // const winners:WinnersType=[{
-    //         name:"Suraj",
-    //         score:100  
-    //     },{
-    //         name:"Ramesh",
-    //         score:98
-    //     },{
-    //         name:"Kalyan",
-    //         score:95
-    //     },{
-    //         name:"Dhamala",
-    //         score:85
-    //     },{
-    //         name:"Kamala",
-    //         score:82
-    //     },{
-    //         name:"Ashish",
-    //         score:79
-    //     },{
-    //         name:"Sushant",
-    //         score:75
-    //     },{
-    //         name:"Ranvir",
-    //         score:50
-    //     },{
-    //         name:"Kush",
-    //         score:48
-    //     },{
-    //         name:"Karey",
-    //         score:45
-    //     }
-    // ]
-
-
     const eachCard=({item})=>(<Card style={{width:'95%',borderWidth:2,borderColor:'red'}}>
                                             <CardItem style={{width:'100%'}}>
                                                     <Text>{item.name}</Text>
@@ -82,7 +47,7 @@ const Leaderboard:React.FC=()=>{
             <FlatList
                 data={winners}
                 renderItem={eachCard}
-                keyExtractor={item=>item.name}
+                keyExtractor={(item,index)=>index.toString()}
                 style={{width:'90%'}}
                 />
         </Card>

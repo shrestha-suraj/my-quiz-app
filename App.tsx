@@ -28,10 +28,6 @@ const App: React.FC = () => {
       if(!value){
         await AsyncStorage.setItem('topTenNames',JSON.stringify([]))
       }
-      const name=await AsyncStorage.getItem("name")
-      if(!name){
-        await AsyncStorage.setItem("name","")
-      }
       const score=await AsyncStorage.getItem("score")
       if(!score){
         await AsyncStorage.setItem("score","0")
