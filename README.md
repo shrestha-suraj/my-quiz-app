@@ -1,6 +1,6 @@
 # my-quiz-app
 
-![Alt Text](https://media.giphy.com/media/OJoal9KfeN49Wa8Or9/giphy.gif)
+<img src="./assets/demo.gif"/>
 
 ### It is a cross platform mobile app for quiz lovers.
 ### The game is simple, answer ten questions and for each correct andswers get a point.
